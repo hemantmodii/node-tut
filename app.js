@@ -1,10 +1,18 @@
-//manual approach (create package.json in the root, create properties etc)
-//npm init (step by step, press enter to skip)
-//npm init -y (everything default)
+var http = require('http')
+var fs = require('fs')
+const { start } = require('repl')
 
-const _ = require('lodash')
+http
+  .createServer((req,res) => {
+    // const text = fs.readFileSync('./content/big.txt', 'utf8')
+    // res.end(text)
+    const fileStream = fs.createReadStream('./content/big.txt', 'utf8');
+    fileStream.on('open', () => {
+      fileStream.pipe(res)
+    })
+    fileStream.on('error', (err) => {
+        res.end(err);
+    })
 
-const items = [1, [2, [3, [4]]]]
-const newItems = _.flattenDeep(items);
-
-console.log(newItems);
+  })
+  .listen(5000)
